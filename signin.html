@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <input id="username" type="text" placeholder="Username" /> <br />
+    <input id="password" type="password" placeholder="Password" /> <br />
+    <button onclick="signin()">Sign In</button>
+
+
+    <script>
+        async function signin() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const res = await axios.get("http://localhost:3000/api/signin")
+            for (let i = 0; i < res.data.users.length; i++) {
+                if (res.data.users[i] === username && res.data.passs[i] === password) {
+                    window.location.href = "/"
+                    return;
+                }
+
+            }
+            alert("Invalid username or password");
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+<html>
+
+<head>
+    <style>
+        /* This hides the scrollbar but keeps the scrolling alive */
+        #leftcontainer {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        #leftcontainer::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, and newer Edge */
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body style="background:#e6e6e6">
+
+
+    <div style="display:flex;justify-content:space-between">
+        <div id="leftcontainer" style="overflow-x:hidden;overflow-y: auto;background-color:#f5f5f5;width:20%;height:95vh;margin-right:10px;margin-left:50px;border-radius:25px;
+           padding:5px 0px 0px 0px ;margin-top:10px">
+            <b
+                style="font-size:25px;padding:10px 10px;justify-content:center;display:flex ;border-bottom:2px solid #e6e6e6">Anonymous
+                Chat</b>
+            <div id="show">
+            </div>
+        </div>
+        <div id="write"
+            style="background-color:#ffffff; width:80%;height:95vh;border-radius:25px;padding:5px 0px 0px 0px ;margin-top:10px;margin-right:10px;display:flex;justify-content:center;flex-direction: column;">
+            <input id="account" type="text" placeholder="Title"
+                style="margin:auto;margin-bottom:1px padding:0px 10px 0px 0px" />
+            <br />
+            <input id="username" type="text" placeholder="Name" style="margin:auto;margin-top:2px" /> <br />
+            <textarea id="password" placeholder="Write a anonymous message ..."
+                style="height:50vh; width:50vw; margin: 10px auto; padding: 15px; border-radius: 15px; border: 1px solid #ccc;"></textarea>
+
+            <br />
+            <button onclick="submit()" style="margin:auto">Submit</button>
+        </div>
+
+    </div>
+
+
+    <script>
+        async function submit() {
+
+            const account = document.getElementById("account").value;
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            document.getElementById("account").value = "";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+
+            const res = await fetch("http://localhost:3000/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    account: account,
+                    username: username,
+                    password: password
+                })
+
+            })
+
+            show(); // Update the sidebar with new data
+        }
+
+
+        async function show() {
+            document.getElementById("show").innerHTML = "";
+            const res = await axios.get("http://localhost:3000/show")
+
+            const accounts = res.data.accounts;
+            const usernames = res.data.usernames;
+            const passwords = res.data.passwords;
+
+            for (let i = accounts.length - 1; i >= 0; i--) {
+                const fetchShow = document.createElement("div");
+                fetchShow.innerHTML = "Title :" + accounts[i] + "<br/>Username :" + usernames[i] + "<br/>Message :" + passwords[i] + "<br/>";
+                fetchShow.setAttribute("style", "padding:10px 10px; border-bottom:2px solid #e6e6e6; word-wrap: break-word; overflow-wrap: break-word;"); document.getElementById("show").appendChild(fetchShow);
+            }
+        }
+
+        show();
+        // Load data on page load
+    </script>
+
+</body>
+
+</html>
